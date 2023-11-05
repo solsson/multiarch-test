@@ -24,3 +24,12 @@ crane pull --platform all --format oci $IMAGE:$TAG multiarch-test-$TAG.oci
 BLOB=$(cat multiarch-test-$TAG.oci/index.json | jq -r '.manifests[0].digest' | sed 's|:|/|')
 cat multiarch-test-$TAG.oci/blobs/$BLOB | jq '.mediaType'
 ```
+
+## without attestation
+
+Omits the two `attestation-manifest` entries from the index, which can speed up some tests further.
+
+```
+TAG=noattest
+docker buildx build --platform=linux/amd64,linux/arm64/v8 -t $IMAGE:$TAG --sbom=false --provenance=false --push .
+```
